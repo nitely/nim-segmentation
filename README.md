@@ -2,7 +2,7 @@
 
 [![licence](https://img.shields.io/github/license/nitely/nim-segmentation.svg?style=flat-square)](https://raw.githubusercontent.com/nitely/nim-segmentation/master/LICENSE)
 
-An implementation of [Unicode Text Segmentation](https://unicode.org/reports/tr29/)
+An implementation of [Unicode Text Segmentation](https://unicode.org/reports/tr29/) (tr29). The splitting is made through a fast DFA.
 
 > See [nim-graphemes](https://github.com/nitely/nim-graphemes) for grapheme cluster segmentation
 
