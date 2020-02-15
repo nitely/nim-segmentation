@@ -178,3 +178,12 @@ iterator words*(s: string): string {.inline.} =
   ## Return each word in `s`
   for b in s.wordsBounds:
     yield s[b]
+
+when isMainModule:
+  block:
+    echo "Test genWordBreakMap"
+    var i = 0
+    for cp in 0 .. 0x10FFFF:
+      doAssert genWordBreakMap(wordBreakProp(Rune(cp))) >= 0
+      inc i
+    doAssert i == 0x10FFFF+1

@@ -11,6 +11,7 @@ requires "nim >= 1.0.4"
 requires "unicodedb >= 0.8.0"
 
 task test, "Test":
+  exec "nim c -r src/segmentation.nim"
   exec "nim c -r tests/tests.nim"
 
   # Test runnable examples
