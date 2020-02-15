@@ -1,5 +1,10 @@
 import strutils
 
+const
+  unicodeVersion* = "12.1.0"
+  specVersion* = "29"
+  specURL* = "http://www.unicode.org/reports/tr29/"
+
 # Rules without "Ignore Format and Extend characters"
 #[
   (
