@@ -1,3 +1,5 @@
+## This library implements Unicode Text Segmentation (tr29)
+
 import macros
 import unicode
 
@@ -143,7 +145,8 @@ macro genWordBreakMap(prop: SgWord): untyped =
     echo "==== genWordBreakMap ===="
     echo repr(result)
 
-iterator words*(s: string): string {.inline.} =
+iterator wordsBounds*(s: string): Slice[int] {.inline.} =
+  ## Return each word boundary in `s`. Boundaries are inclusive
   var
     a = 0
     b = 0
@@ -168,5 +171,10 @@ iterator words*(s: string): string {.inline.} =
         break
       state = next
     doAssert b > a
-    yield s[a .. b-1]
+    yield a .. b-1
     a = b
+
+iterator words*(s: string): string {.inline.} =
+  ## Return each word in `s`
+  for b in s.wordsBounds:
+    yield s[b]

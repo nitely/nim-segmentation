@@ -5,8 +5,7 @@ import sequtils
 import segmentation
 
 proc wbreak(s: string): seq[string] =
-  for ss in s.words:
-    result.add ss
+  toSeq(s.words)
 
 test "Test words break":
   var i = 0
@@ -30,30 +29,33 @@ test "Test words break":
 
 test "Test some words":
   # From the txt file
-  doAssert wbreak("1,̈1.⁠") == @["1,̈1", ".⁠"]
-  doAssert wbreak("\n̈‍") == @["\n", "̈‍"]  # 0xa 0x308 0x200d
-  doAssert wbreak("〱A") == @["〱", "A"]
-  doAssert wbreak("A_0_〱_") == @["A_0_〱_"]
+  check wbreak("1,̈1.⁠") == @["1,̈1", ".⁠"]
+  check wbreak("\n̈‍") == @["\n", "̈‍"]  # 0xa 0x308 0x200d
+  check wbreak("〱A") == @["〱", "A"]
+  check wbreak("A_0_〱_") == @["A_0_〱_"]
   # ZWJ, checked at https://unicode.org/cldr/utility/breaks.jsp
-  doAssert "🛑‍🛑".wbreak == @["🛑‍🛑"]
-  doAssert "a🇦🇧🇨🇩b".wbreak == @["a", "🇦🇧", "🇨🇩", "b"]
-  doAssert "a‍🛑".wbreak == @["a‍🛑"]
-  doAssert "👶🏿̈‍👶🏿".wbreak == @["👶🏿̈‍👶🏿"]
-  doAssert " ‍ن".wbreak == @[" ‍", "ن"]  # Space ZWJ letter
-  doAssert "  ‍🛑".wbreak == @["  ‍🛑"]  # Space Space ZWJ Emoji
+  check "🛑‍🛑".wbreak == @["🛑‍🛑"]
+  check "a🇦🇧🇨🇩b".wbreak == @["a", "🇦🇧", "🇨🇩", "b"]
+  check "a‍🛑".wbreak == @["a‍🛑"]
+  check "👶🏿̈‍👶🏿".wbreak == @["👶🏿̈‍👶🏿"]
+  check " ‍ن".wbreak == @[" ‍", "ن"]  # Space ZWJ letter
+  check "  ‍🛑".wbreak == @["  ‍🛑"]  # Space Space ZWJ Emoji
 
 test "Test misc":
-  doAssert wbreak("11 aa 22 bb 1.2 1,2 $1,2 $1") ==
+  check wbreak("11 aa 22 bb 1.2 1,2 $1,2 $1") ==
     @["11", " ", "aa", " ", "22", " ", "bb", " ", "1.2", " ",
     "1,2", " ", "$", "1,2", " ", "$", "1"]
-  doAssert wbreak("abc abc ghi can't") ==
+  check wbreak("abc abc ghi can't") ==
     @["abc", " ", "abc", " ", "ghi", " ", "can\'t"]
-  doAssert wbreak("The quick? (“brown”) fox can’t jump 32.3 feet, right?") ==
+  check wbreak("The quick? (“brown”) fox can’t jump 32.3 feet, right?") ==
     @["The", " ", "quick", "?", " ", "(", "“", "brown", "”", ")",
     " ", "fox", " ", "can’t", " ", "jump", " ", "32.3", " ", "feet",
     ",", " ", "right", "?"]
-  doAssert wbreak("3.2 3a 3.2a 3.2a3.2a a3.2 3. a3a a3.2a 1to1 1-1 1'1 1'a 1''1") ==
+  check wbreak("3.2 3a 3.2a 3.2a3.2a a3.2 3. a3a a3.2a 1to1 1-1 1'1 1'a 1''1") ==
     @["3.2", " ", "3a", " ", "3.2a", " ", "3.2a3.2a", " ", "a3.2",
     " ", "3", ".", " ", "a3a", " ", "a3.2a", " ", "1to1", " ", "1",
     "-", "1", " ", "1'1", " ", "1", "'", "a", " ", "1", "'", "'", "1"]
-  echo "The (“brown”) fox can’t jump 32.3 feet, right?".wbreak
+
+test "Test wordsBounds":
+  check toSeq("abc def?".wordsBounds) ==
+    @[0 .. 2, 3 .. 3, 4 .. 6, 7 .. 7]
