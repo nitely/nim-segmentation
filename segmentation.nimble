@@ -1,13 +1,13 @@
 # Package
 
-version = "0.0.1"
+version = "0.1.0"
 author = "Esteban Castro Borsani (@nitely)"
 description = "Unicode text segmentation tr29"
 license = "MIT"
 srcDir = "src"
 skipDirs = @["tests", "gen"]
 
-requires "nim >= 1.0.4"
+requires "nim >= 0.19.0"
 requires "unicodedb >= 0.8.0"
 
 task test, "Test":

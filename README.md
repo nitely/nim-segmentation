@@ -14,7 +14,7 @@ nimble install segmentation
 
 # Compatibility
 
-Nim +1.0.4
+Nim 0.19, 0.20, +1.0.4
 
 ## Usage
 
