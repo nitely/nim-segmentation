@@ -145,14 +145,12 @@ macro genWordBreakMap(prop: SgWord): untyped =
     echo "==== genWordBreakMap ===="
     echo repr(result)
 
+# XXX wordBounds (not words)
 iterator wordsBounds*(s: string): Slice[int] {.inline.} =
   ## Return each word boundary in `s`. Boundaries are inclusive
   var
-    a = 0
-    b = 0
-    c = 0
+    state, a, b, c = 0
     r: Rune
-    state = 0
   while b < s.len:
     state = 0
     while true:
@@ -160,7 +158,7 @@ iterator wordsBounds*(s: string): Slice[int] {.inline.} =
       let prop = genWordBreakMap(wordBreakProp(r))
       let next = wordBreakTable[state][prop]
       if next == -1:
-        doAssert state != 0
+        doAssert state > 0
         b = c
         break
       # save point
