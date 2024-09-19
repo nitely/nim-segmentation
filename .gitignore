@@ -3,3 +3,4 @@ tests/tests
 src/segmentation
 gen/gen_re_words
 docs/ugh
+config.nims
