@@ -5,6 +5,8 @@ const
   specVersion* = "29"
   specURL* = "http://www.unicode.org/reports/tr29/"
 
+# https://www.unicode.org/reports/tr29/tr29-47.html#Table_Word_Break_Property_Values
+
 # Rules without "Ignore Format and Extend characters"
 #[
   (
@@ -47,26 +49,24 @@ const pattern =
     CR LF
     | Newline | CR | LF
     | (
-      ZWJ Extended_Pictographic
+      ZWJ ExtPict
       | WSegSpace+
-      | (
-          AHLetter X ((MidLetter | MidNumLetQ) X AHLetter X)*
-          | Numeric X ((MidNum | MidNumLetQ) X Numeric X)*
-          | ExtendNumLet X (Katakana+ X ExtendNumLet X)*
-        )+
+      | WordRun+
       | Hebrew_Letter X Single_Quote
       | Hebrew_Letter X (Double_Quote X Hebrew_Letter X)+
       | ((Katakana | ExtendNumLet) X)+
       | RegionalIndicator X RegionalIndicator
       | Other
-    ) X (ZWJ Extended_Pictographic X)*
+    ) X (ZWJ ExtPict X)*
   )
   """
 
 # IDs must be in non-overlapping substring order (i.e longest to shortest)
 const identifiers = [
   "__EOF__",  # Reserved for the DFA
+  "ALetterExtendedPictographic",  # ALetter & Extended_Pictographic
   "Extended_Pictographic",
+  #"ExtPict",
   "RegionalIndicator",
   "Hebrew_Letter",
   "Single_Quote",
@@ -91,6 +91,7 @@ const identifiers = [
 ]
 
 const anyOther = [
+  "ALetterExtendedPictographic",
   "Extended_Pictographic",
   "RegionalIndicator",
   "Hebrew_Letter",
@@ -121,7 +122,17 @@ proc buildRePattern(p: string): string =
   assert len(identifiers) <= len(letters)
   result = p
   result = replace(result, "Other", "(" & anyOther.join(" | ") & ")")
-  result = replace(result, "AHLetter", "(ALetter | Hebrew_Letter)")
+  # "ZWJ x ExtPict" (rule 3.3) applies to an ALetter & ExtPict too, and
+  # then the AHLetter rules take over (i.e "!(ZWJ)(M)A" is a single word)
+  result = replace(
+    result, "ExtPict",
+    "(Extended_Pictographic | ALetterExtendedPictographic X ((MidLetter | MidNumLetQ) X AHLetter X)* WordRun*)")
+  result = replace(
+    result, "WordRun",
+    "(AHLetter X ((MidLetter | MidNumLetQ) X AHLetter X)* | Numeric X ((MidNum | MidNumLetQ) X Numeric X)* | ExtendNumLet X (Katakana+ X ExtendNumLet X)*)")
+  result = replace(
+    result, "AHLetter",
+    "(ALetter | ALetterExtendedPictographic | Hebrew_Letter)")
   result = replace(result, "MidNumLetQ", "(MidNumLet | Single_Quote)")
   result = replace(result, "X", "(Extend | Format | ZWJ)*")
   result = replace(result, "(", "(?:")
