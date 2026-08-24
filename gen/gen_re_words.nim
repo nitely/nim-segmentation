@@ -148,4 +148,4 @@ when isMainModule:
   echo "pattern:"
   echo re
   echo "table:"
-  echo prettyTable(toDfa(re, letters))
+  echo prettyTable(toDfa(re, letters[0 ..< identifiers.len]))
