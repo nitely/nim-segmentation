@@ -1,4 +1,5 @@
-import strutils
+import std/strutils
+import ./gen_dfa
 
 const
   unicodeVersion* = "12.1.0"
@@ -143,5 +144,8 @@ proc buildRePattern(p: string): string =
   result = replace(result, "\n")
 
 when isMainModule:
+  let re = buildRePattern(pattern)
   echo "pattern:"
-  echo buildRePattern(pattern)
+  echo re
+  echo "table:"
+  echo prettyTable(toDfa(re, letters))
