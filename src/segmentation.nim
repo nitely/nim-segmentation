@@ -1,8 +1,6 @@
 ## This library implements Unicode Text Segmentation (tr29)
 
-import macros
-import unicode
-
+import std/[macros, unicode]
 import unicodedb/segmentation
 
 # Not every state can exit, so this needs backtracking
