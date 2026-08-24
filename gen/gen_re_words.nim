@@ -2,7 +2,7 @@ import std/strutils
 import ./gen_dfa
 
 const
-  unicodeVersion* = "12.1.0"
+  unicodeVersion* = "17.0.0"
   specVersion* = "29"
   specURL* = "http://www.unicode.org/reports/tr29/"
 
